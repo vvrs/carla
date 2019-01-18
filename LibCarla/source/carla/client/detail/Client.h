@@ -115,6 +115,9 @@ namespace detail {
 
     void DrawDebugShape(const rpc::DebugShape &shape);
 
+    std::string StartRecorder(void);
+    void StopRecorder(void);
+    
   private:
 
     class Pimpl;
