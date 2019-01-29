@@ -7,6 +7,16 @@
 #include "Carla.h"
 #include "Carla/Game/TheNewCarlaGameModeBase.h"
 
+static void OnPreTick(ELevelTick TickType, float)
+{
+  UE_LOG(LogCarla, Log, TEXT("%d pre-tick!! (%d)"), GFrameCounter, (uint8)TickType);
+}
+
+static void OnPostTick(UWorld*, ELevelTick TickType, float)
+{
+  UE_LOG(LogCarla, Log, TEXT("%d post-tick!! (%d)"), GFrameCounter, (uint8)TickType);
+}
+
 ATheNewCarlaGameModeBase::ATheNewCarlaGameModeBase(const FObjectInitializer& ObjectInitializer)
   : Super(ObjectInitializer)
 {
@@ -47,6 +57,9 @@ void ATheNewCarlaGameModeBase::InitGame(
 
   auto World = GetWorld();
   check(World != nullptr);
+
+  FWorldDelegates::OnWorldTickStart.AddStatic(&OnPreTick);
+  FWorldDelegates::OnWorldPostActorTick.AddStatic(&OnPostTick);
 
   GameInstance = Cast<UCarlaGameInstance>(GetGameInstance());
   checkf(
@@ -98,9 +111,15 @@ void ATheNewCarlaGameModeBase::BeginPlay()
 {
   Super::BeginPlay();
 
+  auto World = GetWorld();
+  if (World != nullptr)
+  {
+    return;
+  }
+
   if (true) { /// @todo If semantic segmentation enabled.
     check(GetWorld() != nullptr);
-    ATagger::TagActorsInLevel(*GetWorld(), true);
+    ATagger::TagActorsInLevel(*World, true);
     TaggerDelegate->SetSemanticSegmentationEnabled();
   }
 

@@ -13,6 +13,7 @@
 #include "Carla/Settings/CarlaSettingsDelegate.h"
 #include "Carla/Weather/Weather.h"
 
+#include "Misc/CoreDelegates.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 
